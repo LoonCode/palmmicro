@@ -5,7 +5,7 @@ require_once('stockdataarray.php');
 require_once('tutorial/iprules.php');
 
 // 电报公共模板, 返回输入信息
-const TG_DEBUG_VER = '版本054';
+const TG_DEBUG_VER = '版本055';
 const BOT_EOL = "\r\n";
 const MAX_BOT_MSG_LEN = 2048;
 
@@ -18,6 +18,7 @@ const CONTACT_EMAIL = ', 请联系: '.ADMIN_EMAIL;
 function _inBlackList($strIp)
 {
 	$ar = ['66.90.98.35',
+		   '183.250.189.231',
 		   '203.10.99.42'];
 	foreach ($ar as $str)
 	{

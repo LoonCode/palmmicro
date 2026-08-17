@@ -8,7 +8,7 @@ from tkinter import ttk, PhotoImage
 
 from palmmicrostock import PalmmicroStock, SinaStock, TdxStock, IbkrStock
 from palmmicroapi import PalmmicroAPI, PalmmicroDataFrame
-from palmmicrosocket import PalmmicroSocket
+#from palmmicrosocket import PalmmicroSocket
 
 class PalmmicroApp:
 	def __init__(self, root):
@@ -17,7 +17,7 @@ class PalmmicroApp:
 		self.running = True
 		
 		# 软件版本号
-		self.version = '0.74'
+		self.version = '0.75'
 		
 		# 创建DataFrame
 		self.df = self.create_dataframe()
