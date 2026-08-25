@@ -71,6 +71,7 @@ class PalmmicroAPI(TelegramAPI):
 									'hf_NQ': 2,		# MNQ
 									'hf_SI': 5000,	# SI
 									'nf_AG0': 15,
+									'nf_M0': 10,
 									'default': 1}	# 默认倍率
 	DEFAULT_KEY_QUANTITY: int = 1000000
 	DEFAULT_HEDGE_QUANTITY: int = 10000
@@ -407,6 +408,12 @@ class PalmmicroAPI(TelegramAPI):
 					return strHoldingSymbol
 		return False
 
+	def HasCNY(self, strSymbol: str):
+		ar = self.get_param(strSymbol)
+		if ar is not None:
+			return 'CNYest' in ar
+		return False
+
 	def GetMapping(self) -> Dict[str, List[str]]:
 		if self.config is None:
 			return {}
@@ -453,7 +460,7 @@ class PalmmicroDataFrame:
 						   'Hedge': hedge,
 						   'Type': side}
 					rows.append(row | self._build_row())
-		df_flat = pd.DataFrame(data=rows)
+		df_flat = pd.DataFrame(data = rows)
 		self.df = df_flat.set_index(self.index_names).sort_index()
 		#self.df = df_flat.set_index(self.index_names)
 
@@ -495,7 +502,7 @@ class PalmmicroDataFrame:
 		iSize = arQuantity[strSymbol]
 		if iSize > 0:
 			arSrcPrice = mkt_stock.GetSymbolPrice(strMktType)
-			if PalmmicroStock.IsLOF(strSymbol) == False:
+			if PalmmicroStock.IsLOF(strSymbol) == False and self.api.HasCNY(strSymbol):
 				if usdcny_stock is not None:
 					arSrcPrice |= usdcny_stock.GetSymbolPrice()
 			fEst = self.api.EstNetValue(strSymbol, arSrcPrice)
@@ -506,7 +513,7 @@ class PalmmicroDataFrame:
 	@staticmethod
 	def CombineSizeAndPrice(strSymbol, stock, iSize, strType):
 		(strRealSymbol, fPrice), = stock.GetSymbolPrice(strType).items()
-		strDebug = strSymbol + ' ' + str(iSize)
+		strDebug = PalmmicroWrapper.GetSymbolDisplay(strSymbol) + ' ' + str(iSize)
 		if strRealSymbol == strSymbol:
 			strDebug += '@' + str(fPrice)
 		return strDebug
